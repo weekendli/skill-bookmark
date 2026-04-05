@@ -17,77 +17,29 @@ Save content to readitlater repository for later reading.
 
 ## Workflow
 
-```
-Input → Detect Type → Fetch Content → Extract Info → Create Markdown → Git Commit & Push
-```
-
-### Step 1: Detect Input Type
-
-- **URL** → Use fetch-skill (unified fetcher):
-  ```bash
-  python3 ~/.openclaw/workspace/skills/fetch-skill/scripts/fetch.py "{url}" -t
-  ```
-  - Automatically detects: web, x.com/twitter, wechat mp
-  - Fallback chain: Jina → defuddle → markdown.new → Raw
-- **Text content** → Process directly
-- **Image** → OCR extract text first, then process as content
-
-### Step 2: Fetch Content via fetch-skill
+**一键执行脚本**（推荐）：
 
 ```bash
-python3 ~/.openclaw/workspace/skills/fetch-skill/scripts/fetch.py "{url}" -t
+~/.openclaw/workspace/skills/bookmark/scripts/bookmark.sh "{url}"
 ```
 
-Output includes:
-- `title` - article title
-- `author` / `site` - source info
-- `word_count` - content length
-- Full markdown content
+脚本会自动完成：Fetch → Extract → Create Markdown → Git Push
 
-### Step 3: Extract Information
+### 手动流程（备选）
 
-From the fetched content, extract:
-- **title**: Article title (保留源语言，中文标题不翻译)
-- **abstract**: 2-3 sentence summary
-- **tags**: 3-5 relevant keywords
-- **source**: Original URL
-- **date_saved**: Current date (YYYY-MM-DD)
-- **content**: Full original content from fetch-skill (保留所有图片、视频、多媒体链接)
+如果脚本不可用，可手动执行：
 
-### Step 4: Create Markdown File
+1. **Fetch content**:
+   ```bash
+   python3 ~/.openclaw/workspace/skills/fetch-skill/scripts/fetch.py "{url}" -t
+   ```
 
-Save to `~/Obsidian/readitlater/` with filename: `{title-slug}.md`
+2. **Create markdown file** 到 `~/Obsidian/readitlater/`
 
-Template:
-```markdown
----
-title: {title}
-source: {url}
-author: {author}
-date_saved: {YYYY-MM-DD}
-tags: [tag1, tag2, tag3]
----
-
-# {title}
-
-## Abstract
-
-{abstract}
-
-## Original Content
-
-{full content from fetch-skill}
-```
-
-### Step 5: Git Commit & Push
-
-```bash
-cd ~/Obsidian/readitlater
-git add .
-git commit -m "Add: {title}"
-git pull --rebase
-git push
-```
+3. **Git commit & push**:
+   ```bash
+   cd ~/Obsidian/readitlater && git add . && git commit -m "Add: {title}" && git pull --rebase && git push
+   ```
 
 ## File Naming
 
